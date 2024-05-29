@@ -80,7 +80,26 @@ userRouter.put('/:id', async (req, res) => {
         });
     }
 })
-
+userRouter.get('/:id', async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const result = await GymUserModel.findById(userId);
+        const status = result !== null;
+        res.json({
+            status: status,
+            msg: status ? 'data got successful' : "authentication failed",
+            data: {
+                count: result.count
+            }
+        });
+    } catch (error) {
+        res.json({
+            status: false,
+            msg: 'something went wrong',
+            data: error
+        });
+    }
+})
 // using * to handle wild card routing.
 userRouter.all("*", (req, res) => {
     res.status(404).send("page not found");
