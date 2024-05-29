@@ -23,5 +23,7 @@ app.use(bodyParser.json());
 
 // routes
 app.use('/gym', userRouter);
-
+app.all('/', (req, res) => {
+    res.send("application is working fine.");
+})
 module.exports = app;
