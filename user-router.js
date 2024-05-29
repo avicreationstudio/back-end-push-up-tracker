@@ -12,6 +12,26 @@ const GymUserModel = mongoose.model('gymUser', gymUserSchema)
 
 const userRouter = express.Router();
 
+userRouter.get('/:id', async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const result = await GymUserModel.findById(userId);
+        const status = result !== null;
+        res.json({
+            status: status,
+            msg: status ? 'data got successful' : "authentication failed",
+            data: {
+                count: result.count
+            }
+        });
+    } catch (error) {
+        res.json({
+            status: false,
+            msg: 'something went wrong',
+            data: error
+        });
+    }
+});
 // sign-in
 userRouter.post('/sign-in', async (req, res) => {
     try {
@@ -59,10 +79,10 @@ userRouter.post('/sign-up', async (req, res) => {
     }
 });
 // update count
-userRouter.put('/:id', async (req, res) => {
+userRouter.put('/update-count', async (req, res) => {
     try {
         const payload = req.body;
-        const userId = req.params.id;
+        const userId = payload._id;
         const toUpdate = {
             count: payload.count
         };
@@ -80,26 +100,7 @@ userRouter.put('/:id', async (req, res) => {
         });
     }
 })
-userRouter.get('/:id', async (req, res) => {
-    try {
-        const userId = req.params.id;
-        const result = await GymUserModel.findById(userId);
-        const status = result !== null;
-        res.json({
-            status: status,
-            msg: status ? 'data got successful' : "authentication failed",
-            data: {
-                count: result.count
-            }
-        });
-    } catch (error) {
-        res.json({
-            status: false,
-            msg: 'something went wrong',
-            data: error
-        });
-    }
-})
+
 // using * to handle wild card routing.
 userRouter.all("*", (req, res) => {
     res.status(404).send("page not found");
